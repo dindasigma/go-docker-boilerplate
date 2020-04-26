@@ -1,0 +1,11 @@
+FROM golang:alpine
+
+LABEL maintainer="Dinda <dindasigma@gmail.com>"
+
+WORKDIR /app
+
+COPY ./ /app
+
+RUN go mod download
+
+CMD CGO_ENABLED=0 go test -v  ./...
