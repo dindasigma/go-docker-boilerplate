@@ -17,7 +17,7 @@ var userInstance = models.User{}
 
 func TestMain(m *testing.M) {
 	var err error
-	err = godotenv.Load(os.ExpandEnv("../../.env"))
+	err = godotenv.Load(os.ExpandEnv("../../../.env"))
 	if err != nil {
 		log.Fatalf("Error getting env %v\n", err)
 	}
@@ -34,10 +34,9 @@ func databaseConnect() {
 	DBURL := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=disable password=%s", os.Getenv("TEST_DB_HOST"), os.Getenv("TEST_DB_PORT"), os.Getenv("TEST_DB_USER"), os.Getenv("TEST_DB_NAME"), os.Getenv("TEST_DB_PASSWORD"))
 	server.DB, err = gorm.Open("postgres", DBURL)
 	if err != nil {
-		fmt.Printf("Cannot connect to %s database\n", TestDbDriver)
 		log.Fatal("This is the error:", err)
 	} else {
-		fmt.Printf("We are connected to the %s database\n", TestDbDriver)
+		fmt.Println("We are connected to the database")
 	}
 }
 

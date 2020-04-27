@@ -6,9 +6,8 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile.test
-    restart: on-failure
     volumes:
-      - ./:/app
+      - api_test:/app
     depends_on:
       - postgres_db_test
     networks:
@@ -25,9 +24,13 @@ services:
     ports:
       - '${TEST_DB_PORT}:${TEST_DB_PORT}'
     volumes:
-      - ./:/var/www/postgresql/data
+      - database_postgres_test:/var/www/postgresql/data
     networks:
       - go_network_test
+
+volumes:
+  api_test:
+  database_postgres_test:
 
 networks:
   go_network_test:

@@ -1,18 +1,7 @@
 package controllertests
 
 import (
-	"bytes"
-	"encoding/json"
-	"fmt"
-	"log"
-	"net/http"
-	"net/http/httptest"
-	"strconv"
 	"testing"
-
-	"github.com/gorilla/mux"
-	"github.com/dindasigma/go-docker-boilerplate/packages/api/models"
-	"gopkg.in/go-playground/assert.v1"
 )
 
 func TestCreateUser(t *testing.T) {

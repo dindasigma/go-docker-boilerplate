@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"github.com/victorsteven/fullstack/api/models"
+	"github.com/dindasigma/go-docker-boilerplate/packages/api/models"
 	"gopkg.in/go-playground/assert.v1"
 )
 
@@ -99,17 +99,17 @@ func TestUpdateAUser(t *testing.T) {
 		Password: "password",
 	}
 
-	updatedUser, err := userUpdate.UpdateAUser(server.DB, user.ID)
+	updatedUser, err := updateUser.UpdateAUser(server.DB, user.ID)
 	if err != nil {
 		t.Errorf("this is the error updating the user: %v\n", err)
 		return
 	}
 	
-	assert.Equal(t, updatedUser.ID, savedUser.ID)
-	assert.Equal(t, updatedUser.FirstName, savedUser.FirstName)
-	assert.Equal(t, updatedUser.LastName, savedUser.LastName)
-	assert.Equal(t, updatedUser.Email, savedUser.Email)
-	assert.Equal(t, updatedUser.Password, savedUser.Password)
+	assert.Equal(t, updatedUser.ID, updateUser.ID)
+	assert.Equal(t, updatedUser.FirstName, updateUser.FirstName)
+	assert.Equal(t, updatedUser.LastName, updateUser.LastName)
+	assert.Equal(t, updatedUser.Email, updateUser.Email)
+	assert.Equal(t, updatedUser.Password, updateUser.Password)
 
 }
 
