@@ -1,17 +1,12 @@
 FROM golang:alpine
 
-# Install git
-
-RUN apk update && apk add --no-cache git
+LABEL maintainer="Dinda <dindasigma@gmail.com>"
 
 WORKDIR /app
 
-COPY go.mod go.sum ./
+COPY ./ /app
 
-RUN go mod download 
-
-# Copy the source from the current directory to the working Directory inside the container 
-COPY . .
+RUN go mod download
 
 # Run tests
 CMD CGO_ENABLED=0 go test -v  ./...
