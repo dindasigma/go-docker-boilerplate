@@ -1,4 +1,4 @@
-package modeltests
+package tests
 
 import (
 	"log"

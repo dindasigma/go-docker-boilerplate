@@ -1,4 +1,4 @@
-package controllertests
+package tests
 
 import (
 	"testing"
