@@ -15,12 +15,14 @@ import (
 func (server *Server) Login(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
+		// 422
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
 	user := models.User{}
 	err = json.Unmarshal(body, &user)
 	if err != nil {
+		// 422
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
@@ -28,12 +30,14 @@ func (server *Server) Login(w http.ResponseWriter, r *http.Request) {
 	user.Prepare()
 	err = user.Validate("login")
 	if err != nil {
+		// 422
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
 	token, err := server.SignIn(user.Email, user.Password)
 	if err != nil {
 		formattedError := formaterror.FormatError(err.Error())
+		// 422
 		responses.ERROR(w, http.StatusUnprocessableEntity, formattedError)
 		return
 	}
