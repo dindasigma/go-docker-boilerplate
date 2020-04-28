@@ -15,7 +15,7 @@ func TestFindAllUsers(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	err = seedUsers()
+	_, err = seedUsers()
 	if err != nil {
 		log.Fatal(err)
 	}

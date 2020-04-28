@@ -70,7 +70,7 @@ func seedUser() (models.User, error) {
 	return user, nil
 }
 
-func seedUsers() error {
+func seedUsers() ([]models.User, error) {
 	users := []models.User{
 		models.User{
 			FirstName: "John",
@@ -89,8 +89,8 @@ func seedUsers() error {
 	for i, _ := range users {
 		err := server.DB.Model(&models.User{}).Create(&users[i]).Error
 		if err != nil {
-			return err
+			return []models.User{}, err
 		}
 	}
-	return nil
+	return users, nil
 }
