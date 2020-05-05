@@ -2,8 +2,6 @@ FROM golang:alpine
 
 LABEL maintainer="Dinda <dindasigma@gmail.com>"
 
-RUN apk update && apk add --no-cache git
-
 WORKDIR /app
 
 COPY go.mod go.sum ./

@@ -20,7 +20,7 @@ type User struct {
 	Password 	string		`gorm:"size:100;not null;" json:"password"`
 	Role		string		`gorm:"size:100;" json:"role"`
 	CreatedAt	time.Time	`gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
-	UpdatedAt	time.Time	`gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
+	UpdatedAt	time.Time	`gorm:json:"updated_at"`
 }
 
 func Hash(password string) ([]byte, error) {
@@ -47,7 +47,6 @@ func (u *User) Prepare() {
 	u.Role = html.EscapeString(strings.TrimSpace(u.Role))
 	u.Email = html.EscapeString(strings.TrimSpace(u.Email))
 	u.CreatedAt = time.Now()
-	u.UpdatedAt = time.Now()
 }
 
 func (u *User) Validate(action string) error {
@@ -136,8 +135,8 @@ func (u *User) UpdateAUser(db *gorm.DB, uid uint32) (*User, error) {
 	db = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&User{}).UpdateColumns(
 		map[string]interface{}{
 			"password": u.Password,
-			"firstname": u.FirstName,
-			"lastname": u.LastName,
+			"first_name": u.FirstName,
+			"last_name": u.LastName,
 			"role": u.Role,
 			"email": u.Email,
 			"update_at": time.Now(),

@@ -10,10 +10,11 @@
 
 ## Running
 ```
-$ docker-compose up
+$ make run
 ```
 
-## Running Tests
+
+## Testing
 ```
-$ docker-compose -f docker-compose.test.yml up --build --abort-on-container-exit
+$ make test
 ```

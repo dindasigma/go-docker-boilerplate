@@ -31,6 +31,7 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 	user.Prepare()
 	err = user.Validate("")
 	if err != nil {
+		// 422
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
@@ -113,6 +114,7 @@ func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	user.Prepare()
 	err = user.Validate("update")
 	if err != nil {
+		// 422
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
