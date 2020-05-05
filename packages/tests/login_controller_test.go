@@ -10,7 +10,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"gopkg.in/go-playground/assert.v1"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestSignIn(t *testing.T) {
@@ -113,7 +113,7 @@ func TestLogin(t *testing.T) {
 		handler := http.HandlerFunc(server.Login)
 		handler.ServeHTTP(rr, req)
 
-		assert.Equal(t, rr.Code, v.statusCode)
+		assert.Equal(t, v.statusCode, rr.Code)
 		if v.statusCode == 200 {
 			assert.NotEqual(t, rr.Body.String(), "")
 		}
@@ -124,7 +124,7 @@ func TestLogin(t *testing.T) {
 			if err != nil {
 				t.Errorf("Cannot convert to json: %v", err)
 			}
-			assert.Equal(t, responseMap["error"], v.errorMessage)
+			assert.Equal(t, v.errorMessage, responseMap["error"])
 		}
 	}
 }

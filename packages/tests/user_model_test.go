@@ -6,7 +6,7 @@ import (
 
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/dindasigma/go-docker-boilerplate/packages/api/models"
-	"gopkg.in/go-playground/assert.v1"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestFindAllUsers(t *testing.T) {
@@ -26,7 +26,7 @@ func TestFindAllUsers(t *testing.T) {
 		return
 	}
 
-	assert.Equal(t, len(*users), 2)
+	assert.Equal(t, 2, len(*users))
 }
 
 func TestGetUserByID(t *testing.T) {
@@ -46,11 +46,11 @@ func TestGetUserByID(t *testing.T) {
 		return
 	}
 
-	assert.Equal(t, foundUser.ID, user.ID)
-	assert.Equal(t, foundUser.FirstName, user.FirstName)
-	assert.Equal(t, foundUser.LastName, user.LastName)
-	assert.Equal(t, foundUser.Email, user.Email)
-	assert.Equal(t, foundUser.Password, user.Password)
+	assert.Equal(t, user.ID, foundUser.ID)
+	assert.Equal(t, user.FirstName, foundUser.FirstName)
+	assert.Equal(t, user.LastName, foundUser.LastName)
+	assert.Equal(t, user.Email, foundUser.Email)
+	assert.Equal(t, user.Password, foundUser.Password)
 }
 
 func TestSaveUser(t *testing.T) {
@@ -105,11 +105,11 @@ func TestUpdateAUser(t *testing.T) {
 		return
 	}
 	
-	assert.Equal(t, updatedUser.ID, updateUser.ID)
-	assert.Equal(t, updatedUser.FirstName, updateUser.FirstName)
-	assert.Equal(t, updatedUser.LastName, updateUser.LastName)
-	assert.Equal(t, updatedUser.Email, updateUser.Email)
-	assert.Equal(t, updatedUser.Password, updateUser.Password)
+	assert.Equal(t, updateUser.ID, updatedUser.ID)
+	assert.Equal(t, updateUser.FirstName, updatedUser.FirstName)
+	assert.Equal(t, updateUser.LastName, updatedUser.LastName)
+	assert.Equal(t, updateUser.Email, updatedUser.Email)
+	assert.Equal(t, updateUser.Password, updatedUser.Password)
 
 }
 
@@ -130,5 +130,5 @@ func TestDeleteAUser(t *testing.T) {
 		return
 	}
 
-	assert.Equal(t, int(isDeleted), 1)
+	assert.Equal(t, 1, int(isDeleted))
 }
