@@ -5,16 +5,22 @@ definitions:
       created_at:
         type: string
       email:
+        example: john@doe.com
         type: string
       first_name:
+        example: John
         type: string
       id:
+        example: 1
         type: integer
       last_name:
+        example: Doe
         type: string
       password:
+        example: password
         type: string
       role:
+        example: admin
         type: string
       updatedAt:
         type: string

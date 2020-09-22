@@ -7,6 +7,7 @@
 - GORM
 - Postgres
 - JWT
+- Swagger
 
 ## Running
 ```

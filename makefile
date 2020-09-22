@@ -1,7 +1,7 @@
 run: stop up
 
 up:
-	docker-compose -f docker-compose.yml up --build
+	docker-compose -f docker-compose.yml up -d --build
 
 stop:
 	docker-compose -f docker-compose.yml stop
@@ -19,3 +19,6 @@ test-down:
 build-dev:
 	swag init -g commands/runserver.go
 	go build -v commands/runserver.go
+
+rebuild-swagger:
+	swag init -g commands/runserver.go

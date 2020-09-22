@@ -13,14 +13,14 @@ import (
 )
 
 type User struct {
-	ID			uint32		`gorm:"primary_key;auto_increment" json:"id"`
-	FirstName	string		`gorm:"size:255;not null;" json:"first_name"`
-	LastName	string		`gorm:"size:255;" json:"last_name"`
-	Email		string		`gorm:"size:255;not null;unique" json:"email"`
-	Password 	string		`gorm:"size:100;not null;" json:"password"`
-	Role		string		`gorm:"size:100;" json:"role"`
-	CreatedAt	time.Time	`gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
-	UpdatedAt	time.Time	`gorm:json:"updated_at"`
+	ID        uint32    `gorm:"primary_key;auto_increment" json:"id" example:"1"`
+	FirstName string    `gorm:"size:255;not null;" json:"first_name" example:"John"`
+	LastName  string    `gorm:"size:255;" json:"last_name" example:"Doe"`
+	Email     string    `gorm:"size:255;not null;unique" json:"email" example:"john@doe.com"`
+	Password  string    `gorm:"size:100;not null;" json:"password" example:"password"`
+	Role      string    `gorm:"size:100;" json:"role" example:"admin"`
+	CreatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
+	UpdatedAt time.Time `gorm:json:"updated_at" example:"1"`
 }
 
 func Hash(password string) ([]byte, error) {
@@ -134,12 +134,12 @@ func (u *User) UpdateAUser(db *gorm.DB, uid uint32) (*User, error) {
 	}
 	db = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&User{}).UpdateColumns(
 		map[string]interface{}{
-			"password": u.Password,
+			"password":   u.Password,
 			"first_name": u.FirstName,
-			"last_name": u.LastName,
-			"role": u.Role,
-			"email": u.Email,
-			"update_at": time.Now(),
+			"last_name":  u.LastName,
+			"role":       u.Role,
+			"email":      u.Email,
+			"update_at":  time.Now(),
 		},
 	)
 	if db.Error != nil {
