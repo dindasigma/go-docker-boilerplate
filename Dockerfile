@@ -1,4 +1,4 @@
-FROM golang:alpine
+FROM golang:latest
 
 LABEL maintainer="Dinda <dindasigma@gmail.com>"
 
@@ -10,4 +10,6 @@ RUN go mod download
 
 RUN go get github.com/githubnemo/CompileDaemon
 
-ENTRYPOINT CompileDaemon --build="go build commands/runserver.go" --command=./runserver
+RUN go get -u github.com/swaggo/swag/cmd/swag
+
+ENTRYPOINT CompileDaemon -exclude-dir=.git -exclude-dir=docs --build="make build-dev" --command=./runserver

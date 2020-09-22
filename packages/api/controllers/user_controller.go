@@ -8,13 +8,22 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/gorilla/mux"
 	"github.com/dindasigma/go-docker-boilerplate/packages/api/auth"
 	"github.com/dindasigma/go-docker-boilerplate/packages/api/models"
 	"github.com/dindasigma/go-docker-boilerplate/packages/api/responses"
 	"github.com/dindasigma/go-docker-boilerplate/packages/api/utils/formaterror"
+	"github.com/gorilla/mux"
 )
 
+// CreateUser godoc
+// @Summary Create a new user
+// @Description Create a new user with the input paylod
+// @Tags users
+// @Accept  json
+// @Produce  json
+// @Param user body models.User true "Create user"
+// @Success 200 {object} models.User
+// @Router /users [post]
 func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -48,6 +57,14 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 	responses.JSON(w, http.StatusCreated, userCreated)
 }
 
+// GetUsers godoc
+// @Summary Get details of all users
+// @Description Get details of all users
+// @Tags users
+// @Accept  json
+// @Produce  json
+// @Success 200 {array} models.User
+// @Router /users [get]
 func (server *Server) GetUsers(w http.ResponseWriter, r *http.Request) {
 	user := models.User{}
 	users, err := user.FindAllUsers(server.DB)
@@ -153,7 +170,7 @@ func (server *Server) DeleteUser(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusInternalServerError, err)
 		return
 	}
-	
+
 	w.Header().Set("Entity", fmt.Sprintf("%d", uid))
 	responses.JSON(w, http.StatusNoContent, "")
 }
