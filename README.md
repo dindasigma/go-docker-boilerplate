@@ -2,7 +2,7 @@
 
 ## Tools
 - Go
-- Docker
+- Docker (auto reload with CompileDaemon)
 - Gorilla Mux
 - GORM
 - Postgres

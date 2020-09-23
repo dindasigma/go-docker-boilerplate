@@ -17,12 +17,14 @@ import (
 
 // CreateUser godoc
 // @Summary Create a new user
-// @Description Create a new user with the input paylod
+// @Description Create a new user with the input payload
 // @Tags users
 // @Accept  json
 // @Produce  json
 // @Param user body models.User true "Create user"
 // @Success 200 {object} models.User
+// @Failure 422 {object} responses.Error
+// @Failure 500 {object} responses.Error
 // @Router /users [post]
 func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
@@ -64,6 +66,7 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Success 200 {array} models.User
+// @Failure 500 {object} responses.Error
 // @Router /users [get]
 func (server *Server) GetUsers(w http.ResponseWriter, r *http.Request) {
 	user := models.User{}
@@ -75,6 +78,16 @@ func (server *Server) GetUsers(w http.ResponseWriter, r *http.Request) {
 	responses.JSON(w, http.StatusOK, users)
 }
 
+// GetUser godoc
+// @Summary Get single row data of user with given id
+// @Description Get single row data of user with given id
+// @Tags users
+// @Accept  json
+// @Produce  json
+// @Param id path int true "ID of the user"
+// @Success 200 {object} models.User
+// @Failure 500 {object} responses.Error
+// @Router /users/{id} [get]
 func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	uid, err := strconv.ParseUint(vars["id"], 10, 32)
@@ -93,6 +106,21 @@ func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
 	responses.JSON(w, http.StatusOK, userGotten)
 }
 
+// UpdateUser godoc
+// @Summary Update user identified by the given id
+// @Description Update user corresponding to the input id
+// @Tags users
+// @Accept  json
+// @Produce  json
+// @Param id path int true "ID of the user to be updated"
+// @Param user body models.User true "Update user"
+// @Security ApiKeyAuth
+// @Success 200 {object} models.User
+// @Failure 400 {object} responses.Error
+// @Failure 401 {object} responses.Error
+// @Failure 422 {object} responses.Error
+// @Failure 500 {object} responses.Error
+// @Router /users/{id} [put]
 func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	uid, err := strconv.ParseUint(vars["id"], 10, 32)
@@ -144,6 +172,19 @@ func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	responses.JSON(w, http.StatusOK, updatedUser)
 }
 
+// DeleteUser godoc
+// @Summary Delete user identified by the given id
+// @Description Delete user corresponding to the input id
+// @Tags users
+// @Accept  json
+// @Produce  json
+// @Param id path int true "ID of the user to be deleted"
+// @Security ApiKeyAuth
+// @Success 204 "No Content"
+// @Failure 400 {object} responses.Error
+// @Failure 401 {object} responses.Error
+// @Failure 500 {object} responses.Error
+// @Router /users/{id} [delete]
 func (server *Server) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	user := models.User{}

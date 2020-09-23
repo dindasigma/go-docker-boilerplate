@@ -3,6 +3,7 @@ definitions:
   models.User:
     properties:
       created_at:
+        example: "2020-09-06T15:17:17.769031568Z"
         type: string
       email:
         example: john@doe.com
@@ -22,7 +23,13 @@ definitions:
       role:
         example: admin
         type: string
-      updatedAt:
+      updated_at:
+        example: "2020-09-06T15:17:17.769031568Z"
+        type: string
+    type: object
+  responses.Error:
+    properties:
+      error:
         type: string
     type: object
 host: localhost:8080
@@ -38,6 +45,32 @@ info:
   title: Go Docker Boilerplate API
   version: "1.0"
 paths:
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Login user to get JWT Token for bearerAuth
+      parameters:
+      - description: Email and Password only
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: JWT Token
+          schema:
+            type: string
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/responses.Error'
+      summary: Login user to get JWT Token
+      tags:
+      - users
   /users:
     get:
       consumes:
@@ -52,13 +85,17 @@ paths:
             items:
               $ref: '#/definitions/models.User'
             type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.Error'
       summary: Get details of all users
       tags:
       - users
     post:
       consumes:
       - application/json
-      description: Create a new user with the input paylod
+      description: Create a new user with the input payload
       parameters:
       - description: Create user
         in: body
@@ -73,7 +110,121 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.User'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/responses.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.Error'
       summary: Create a new user
       tags:
       - users
+  /users/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete user corresponding to the input id
+      parameters:
+      - description: ID of the user to be deleted
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete user identified by the given id
+      tags:
+      - users
+    get:
+      consumes:
+      - application/json
+      description: Get single row data of user with given id
+      parameters:
+      - description: ID of the user
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.Error'
+      summary: Get single row data of user with given id
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      description: Update user corresponding to the input id
+      parameters:
+      - description: ID of the user to be updated
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update user
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.Error'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/responses.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Update user identified by the given id
+      tags:
+      - users
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

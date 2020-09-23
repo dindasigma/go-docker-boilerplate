@@ -12,6 +12,15 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// @Summary Login user to get JWT Token
+// @Description Login user to get JWT Token for bearerAuth
+// @Tags users
+// @Accept  json
+// @Produce  json
+// @Param user body models.User true "Email and Password only"
+// @Success 200 {string} Token "JWT Token"
+// @Failure 422 {object} responses.Error
+// @Router /login [post]
 func (server *Server) Login(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
