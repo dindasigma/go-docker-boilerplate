@@ -6,13 +6,12 @@ import (
 	"os"
 	"testing"
 
-	"github.com/dindasigma/go-docker-boilerplate/packages/api/controllers"
+	"github.com/dindasigma/go-docker-boilerplate/packages/api/datasources"
 	"github.com/dindasigma/go-docker-boilerplate/packages/api/models/users"
 	"github.com/jinzhu/gorm"
 	"github.com/joho/godotenv"
 )
 
-var server = controllers.Server{}
 var userInstance = users.User{}
 
 func TestMain(m *testing.M) {
@@ -32,7 +31,7 @@ func TestMain(m *testing.M) {
 func databaseConnect() {
 	var err error
 	DBURL := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=disable password=%s", os.Getenv("TEST_DB_HOST"), os.Getenv("TEST_DB_PORT"), os.Getenv("TEST_DB_USER"), os.Getenv("TEST_DB_NAME"), os.Getenv("TEST_DB_PASSWORD"))
-	server.DB, err = gorm.Open("postgres", DBURL)
+	datasources.DB, err = gorm.Open("postgres", DBURL)
 	if err != nil {
 		log.Fatal("This is the error:", err)
 	} else {
@@ -41,11 +40,11 @@ func databaseConnect() {
 }
 
 func refreshUserTable() error {
-	err := server.DB.DropTableIfExists(&users.User{}).Error
+	err := datasources.DB.DropTableIfExists(&users.User{}).Error
 	if err != nil {
 		return err
 	}
-	err = server.DB.AutoMigrate(&users.User{}).Error
+	err = datasources.DB.AutoMigrate(&users.User{}).Error
 	if err != nil {
 		return err
 	}
@@ -63,7 +62,7 @@ func seedUser() (users.User, error) {
 		Password:  "password",
 	}
 
-	err := server.DB.Model(&users.User{}).Create(&user).Error
+	err := datasources.DB.Model(&users.User{}).Create(&user).Error
 	if err != nil {
 		log.Fatalf("cannot seed users table: %v", err)
 	}
@@ -71,7 +70,7 @@ func seedUser() (users.User, error) {
 }
 
 func seedUsers() ([]users.User, error) {
-	users := []users.User{
+	usersSeed := []users.User{
 		users.User{
 			FirstName: "John",
 			LastName:  "Doe",
@@ -86,11 +85,11 @@ func seedUsers() ([]users.User, error) {
 		},
 	}
 
-	for i, _ := range users {
-		err := server.DB.Model(&users.User{}).Create(&users[i]).Error
+	for i, _ := range usersSeed {
+		err := datasources.DB.Model(&users.User{}).Create(&usersSeed[i]).Error
 		if err != nil {
 			return []users.User{}, err
 		}
 	}
-	return users, nil
+	return usersSeed, nil
 }

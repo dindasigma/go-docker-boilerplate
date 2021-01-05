@@ -4,6 +4,7 @@ import (
 	"log"
 	"testing"
 
+	"github.com/dindasigma/go-docker-boilerplate/packages/api/datasources"
 	"github.com/dindasigma/go-docker-boilerplate/packages/api/models/users"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/stretchr/testify/assert"
@@ -20,7 +21,7 @@ func TestFindAllUsers(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	users, err := userInstance.FindAllUsers(server.DB)
+	users, err := userInstance.FindAll(datasources.DB)
 	if err != nil {
 		t.Errorf("this is the error getting the users: %v\n", err)
 		return
@@ -40,7 +41,7 @@ func TestGetUserByID(t *testing.T) {
 		log.Fatalf("cannot seed users table: %v", err)
 	}
 
-	foundUser, err := userInstance.FindUserByID(server.DB, user.ID)
+	foundUser, err := userInstance.FindByID(datasources.DB, user.ID)
 	if err != nil {
 		t.Errorf("this is the error getting one user: %v\n", err)
 		return
@@ -67,7 +68,7 @@ func TestSaveUser(t *testing.T) {
 		Password:  "password",
 	}
 
-	savedUser, err := newUser.SaveUser(server.DB)
+	savedUser, err := newUser.Save(datasources.DB)
 	if err != nil {
 		t.Errorf("this is the error getting the users: %v\n", err)
 		return // todo check return
@@ -99,7 +100,7 @@ func TestUpdateAUser(t *testing.T) {
 		Password:  "password",
 	}
 
-	updatedUser, err := updateUser.UpdateAUser(server.DB, user.ID)
+	updatedUser, err := updateUser.Update(datasources.DB, user.ID)
 	if err != nil {
 		t.Errorf("this is the error updating the user: %v\n", err)
 		return
@@ -124,7 +125,7 @@ func TestDeleteAUser(t *testing.T) {
 		log.Fatalf("cannot seed users table: %v", err)
 	}
 
-	isDeleted, err := userInstance.DeleteAUser(server.DB, user.ID)
+	isDeleted, err := userInstance.Delete(datasources.DB, user.ID)
 	if err != nil {
 		t.Errorf("this is the error updating the user: %v\n", err)
 		return

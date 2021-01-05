@@ -10,6 +10,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/dindasigma/go-docker-boilerplate/packages/api/controllers"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -25,29 +26,29 @@ func TestSignIn(t *testing.T) {
 	}
 
 	samples := []struct {
-		email string
-		password string
+		email        string
+		password     string
 		errorMessage string
 	}{
 		{
-			email: user.Email,
-			password: "password",
+			email:        user.Email,
+			password:     "password",
 			errorMessage: "",
 		},
 		{
-			email: user.Email,
-			password: "Wrong password",
+			email:        user.Email,
+			password:     "Wrong password",
 			errorMessage: "crypto/bcrypt: hashedPassword is not the hash of the given password",
 		},
 		{
-			email: "Wrong email",
-			password: "password",
+			email:        "Wrong email",
+			password:     "password",
 			errorMessage: "record not found",
 		},
 	}
 
 	for _, v := range samples {
-		token, err := server.SignIn(v.email, v.password)
+		token, err := controllers.LoginController.SignIn(v.email, v.password)
 		if err != nil {
 			assert.Equal(t, err, errors.New(v.errorMessage))
 		} else {
@@ -68,38 +69,38 @@ func TestLogin(t *testing.T) {
 	}
 
 	samples := []struct {
-		inputJSON string
-		statusCode int
+		inputJSON    string
+		statusCode   int
 		errorMessage string
 	}{
 		{
-			inputJSON: `{"email": "john@doe.com", "password": "password"}`,
-			statusCode: 200,
+			inputJSON:    `{"email": "john@doe.com", "password": "password"}`,
+			statusCode:   200,
 			errorMessage: "",
 		},
 		{
-			inputJSON: `{"email": "john@doe.com", "password": "wrong password"}`,
-			statusCode: 422,
+			inputJSON:    `{"email": "john@doe.com", "password": "wrong password"}`,
+			statusCode:   422,
 			errorMessage: "Incorrect Password",
 		},
 		{
-			inputJSON: `{"email": "frank@gmail.com", "password": "password"}`,
-			statusCode: 422,
+			inputJSON:    `{"email": "frank@gmail.com", "password": "password"}`,
+			statusCode:   422,
 			errorMessage: "Incorrect Details",
 		},
 		{
-			inputJSON: `{"email": "johndoe.com", "password": "password"}`,
-			statusCode: 422,
+			inputJSON:    `{"email": "johndoe.com", "password": "password"}`,
+			statusCode:   422,
 			errorMessage: "Invalid Email",
 		},
 		{
-			inputJSON: `{"email": "", "password": "password"}`,
-			statusCode: 422,
+			inputJSON:    `{"email": "", "password": "password"}`,
+			statusCode:   422,
 			errorMessage: "Required Email",
 		},
 		{
-			inputJSON: `{"email": "kan@gmail.com", "password": ""}`,
-			statusCode: 422,
+			inputJSON:    `{"email": "kan@gmail.com", "password": ""}`,
+			statusCode:   422,
 			errorMessage: "Required Password",
 		},
 	}
@@ -110,7 +111,7 @@ func TestLogin(t *testing.T) {
 			t.Errorf("This is the error: %v", err)
 		}
 		rr := httptest.NewRecorder()
-		handler := http.HandlerFunc(server.Login)
+		handler := http.HandlerFunc(controllers.LoginController.Login)
 		handler.ServeHTTP(rr, req)
 
 		assert.Equal(t, v.statusCode, rr.Code)

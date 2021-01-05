@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/dindasigma/go-docker-boilerplate/packages/api/controllers"
 	"github.com/dindasigma/go-docker-boilerplate/packages/api/models/users"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
@@ -68,7 +69,7 @@ func TestCreateUser(t *testing.T) {
 		}
 
 		rr := httptest.NewRecorder()
-		handler := http.HandlerFunc(server.CreateUser)
+		handler := http.HandlerFunc(controllers.UserController.Create)
 		handler.ServeHTTP(rr, req)
 
 		responseMap := make(map[string]interface{})
@@ -106,7 +107,7 @@ func TestGetUsers(t *testing.T) {
 	}
 
 	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(server.GetUsers)
+	handler := http.HandlerFunc(controllers.UserController.Get)
 	handler.ServeHTTP(rr, req)
 
 	var users []users.User
@@ -157,7 +158,7 @@ func TestGetUser(t *testing.T) {
 		}
 		req = mux.SetURLVars(req, map[string]string{"id": v.id})
 		rr := httptest.NewRecorder()
-		handler := http.HandlerFunc(server.GetUser)
+		handler := http.HandlerFunc(controllers.UserController.GetByID)
 		handler.ServeHTTP(rr, req)
 
 		responseMap := make(map[string]interface{})
@@ -195,7 +196,7 @@ func TestUpdateUser(t *testing.T) {
 	AuthPassword = "password"
 
 	// login
-	token, err := server.SignIn(AuthEmail, AuthPassword)
+	token, err := controllers.LoginController.SignIn(AuthEmail, AuthPassword)
 	if err != nil {
 		log.Fatalf("cannot login: %v\n", err)
 	}
@@ -292,7 +293,7 @@ func TestUpdateUser(t *testing.T) {
 		req = mux.SetURLVars(req, map[string]string{"id": v.id})
 
 		rr := httptest.NewRecorder()
-		handler := http.HandlerFunc(server.UpdateUser)
+		handler := http.HandlerFunc(controllers.UserController.Update)
 
 		req.Header.Set("Authorization", v.tokenGiven)
 
@@ -334,7 +335,7 @@ func TestDeleteUser(t *testing.T) {
 	AuthPassword = "password"
 
 	// login
-	token, err := server.SignIn(AuthEmail, AuthPassword)
+	token, err := controllers.LoginController.SignIn(AuthEmail, AuthPassword)
 	if err != nil {
 		log.Fatalf("cannot login: %v\n", err)
 	}
@@ -384,7 +385,7 @@ func TestDeleteUser(t *testing.T) {
 		}
 		req = mux.SetURLVars(req, map[string]string{"id": v.id})
 		rr := httptest.NewRecorder()
-		handler := http.HandlerFunc(server.DeleteUser)
+		handler := http.HandlerFunc(controllers.UserController.Delete)
 
 		req.Header.Set("Authorization", v.tokenGiven)
 
