@@ -3,7 +3,7 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/dindasigma/go-docker-boilerplate/packages/api/responses"
+	"github.com/dindasigma/go-docker-boilerplate/packages/api/utils/responses"
 )
 
 var (

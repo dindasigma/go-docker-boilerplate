@@ -11,8 +11,8 @@ import (
 	"github.com/dindasigma/go-docker-boilerplate/packages/api/auth"
 	"github.com/dindasigma/go-docker-boilerplate/packages/api/datasources"
 	"github.com/dindasigma/go-docker-boilerplate/packages/api/models/users"
-	"github.com/dindasigma/go-docker-boilerplate/packages/api/responses"
 	"github.com/dindasigma/go-docker-boilerplate/packages/api/utils/formaterror"
+	"github.com/dindasigma/go-docker-boilerplate/packages/api/utils/responses"
 	"github.com/gorilla/mux"
 )
 
