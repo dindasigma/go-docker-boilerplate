@@ -1,6 +1,11 @@
 basePath: /
 definitions:
-  models.User:
+  responses.Error:
+    properties:
+      error:
+        type: string
+    type: object
+  users.User:
     properties:
       created_at:
         example: "2020-09-06T15:17:17.769031568Z"
@@ -27,11 +32,6 @@ definitions:
         example: "2020-09-06T15:17:17.769031568Z"
         type: string
     type: object
-  responses.Error:
-    properties:
-      error:
-        type: string
-    type: object
 host: localhost:8080
 info:
   contact:
@@ -56,7 +56,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/models.User'
+          $ref: '#/definitions/users.User'
       produces:
       - application/json
       responses:
@@ -83,7 +83,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/models.User'
+              $ref: '#/definitions/users.User'
             type: array
         "500":
           description: Internal Server Error
@@ -102,14 +102,14 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/models.User'
+          $ref: '#/definitions/users.User'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.User'
+            $ref: '#/definitions/users.User'
         "422":
           description: Unprocessable Entity
           schema:
@@ -170,7 +170,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.User'
+            $ref: '#/definitions/users.User'
         "500":
           description: Internal Server Error
           schema:
@@ -193,14 +193,14 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/models.User'
+          $ref: '#/definitions/users.User'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.User'
+            $ref: '#/definitions/users.User'
         "400":
           description: Bad Request
           schema:

@@ -5,10 +5,10 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/dindasigma/go-docker-boilerplate/packages/api/models/users"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"github.com/dindasigma/go-docker-boilerplate/packages/api/models"
 )
 
 type Server struct {
@@ -27,7 +27,7 @@ func (server *Server) Initialize(DbUser, DbPassword, DbPort, DbHost, DbName stri
 		fmt.Printf("We are connected to the database")
 	}
 
-	server.DB.Debug().AutoMigrate(&models.User{})
+	server.DB.Debug().AutoMigrate(&users.User{})
 
 	server.Router = mux.NewRouter()
 

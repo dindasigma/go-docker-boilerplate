@@ -4,8 +4,8 @@ import (
 	"log"
 	"testing"
 
+	"github.com/dindasigma/go-docker-boilerplate/packages/api/models/users"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"github.com/dindasigma/go-docker-boilerplate/packages/api/models"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -59,12 +59,12 @@ func TestSaveUser(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	newUser := models.User{
-		ID: 1,
+	newUser := users.User{
+		ID:        1,
 		FirstName: "Johny",
-		LastName: "Doe",
-		Email: "johny@doe.com",
-		Password: "password",
+		LastName:  "Doe",
+		Email:     "johny@doe.com",
+		Password:  "password",
 	}
 
 	savedUser, err := newUser.SaveUser(server.DB)
@@ -91,12 +91,12 @@ func TestUpdateAUser(t *testing.T) {
 		log.Fatalf("cannot seed users table: %v", err)
 	}
 
-	updateUser := models.User{
-		ID: 1,
+	updateUser := users.User{
+		ID:        1,
 		FirstName: "John",
-		LastName: "Update",
-		Email: "johny@update.com",
-		Password: "password",
+		LastName:  "Update",
+		Email:     "johny@update.com",
+		Password:  "password",
 	}
 
 	updatedUser, err := updateUser.UpdateAUser(server.DB, user.ID)
@@ -104,7 +104,7 @@ func TestUpdateAUser(t *testing.T) {
 		t.Errorf("this is the error updating the user: %v\n", err)
 		return
 	}
-	
+
 	assert.Equal(t, updateUser.ID, updatedUser.ID)
 	assert.Equal(t, updateUser.FirstName, updatedUser.FirstName)
 	assert.Equal(t, updateUser.LastName, updatedUser.LastName)

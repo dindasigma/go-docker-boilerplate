@@ -9,7 +9,7 @@ import (
 	"strconv"
 
 	"github.com/dindasigma/go-docker-boilerplate/packages/api/auth"
-	"github.com/dindasigma/go-docker-boilerplate/packages/api/models"
+	"github.com/dindasigma/go-docker-boilerplate/packages/api/models/users"
 	"github.com/dindasigma/go-docker-boilerplate/packages/api/responses"
 	"github.com/dindasigma/go-docker-boilerplate/packages/api/utils/formaterror"
 	"github.com/gorilla/mux"
@@ -21,8 +21,8 @@ import (
 // @Tags users
 // @Accept  json
 // @Produce  json
-// @Param user body models.User true "Create user"
-// @Success 200 {object} models.User
+// @Param user body users.User true "Create user"
+// @Success 200 {object} users.User
 // @Failure 422 {object} responses.Error
 // @Failure 500 {object} responses.Error
 // @Router /users [post]
@@ -32,7 +32,7 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 	}
 
-	user := models.User{}
+	user := users.User{}
 	err = json.Unmarshal(body, &user)
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
@@ -65,11 +65,11 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 // @Tags users
 // @Accept  json
 // @Produce  json
-// @Success 200 {array} models.User
+// @Success 200 {array} users.User
 // @Failure 500 {object} responses.Error
 // @Router /users [get]
 func (server *Server) GetUsers(w http.ResponseWriter, r *http.Request) {
-	user := models.User{}
+	user := users.User{}
 	users, err := user.FindAllUsers(server.DB)
 	if err != nil {
 		responses.ERROR(w, http.StatusInternalServerError, err)
@@ -85,7 +85,7 @@ func (server *Server) GetUsers(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Param id path int true "ID of the user"
-// @Success 200 {object} models.User
+// @Success 200 {object} users.User
 // @Failure 500 {object} responses.Error
 // @Router /users/{id} [get]
 func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
@@ -96,7 +96,7 @@ func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user := models.User{}
+	user := users.User{}
 	userGotten, err := user.FindUserByID(server.DB, uint32(uid))
 	if err != nil {
 		responses.ERROR(w, http.StatusBadRequest, err)
@@ -113,9 +113,9 @@ func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Param id path int true "ID of the user to be updated"
-// @Param user body models.User true "Update user"
+// @Param user body users.User true "Update user"
 // @Security ApiKeyAuth
-// @Success 200 {object} models.User
+// @Success 200 {object} users.User
 // @Failure 400 {object} responses.Error
 // @Failure 401 {object} responses.Error
 // @Failure 422 {object} responses.Error
@@ -136,7 +136,7 @@ func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user := models.User{}
+	user := users.User{}
 	err = json.Unmarshal(body, &user)
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
@@ -187,7 +187,7 @@ func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
 // @Router /users/{id} [delete]
 func (server *Server) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	user := models.User{}
+	user := users.User{}
 
 	uid, err := strconv.ParseUint(vars["id"], 10, 32)
 	if err != nil {

@@ -6,14 +6,14 @@ import (
 	"os"
 	"testing"
 
+	"github.com/dindasigma/go-docker-boilerplate/packages/api/controllers"
+	"github.com/dindasigma/go-docker-boilerplate/packages/api/models/users"
 	"github.com/jinzhu/gorm"
 	"github.com/joho/godotenv"
-	"github.com/dindasigma/go-docker-boilerplate/packages/api/controllers"
-	"github.com/dindasigma/go-docker-boilerplate/packages/api/models"
 )
 
 var server = controllers.Server{}
-var userInstance = models.User{}
+var userInstance = users.User{}
 
 func TestMain(m *testing.M) {
 	var err error
@@ -41,11 +41,11 @@ func databaseConnect() {
 }
 
 func refreshUserTable() error {
-	err := server.DB.DropTableIfExists(&models.User{}).Error
+	err := server.DB.DropTableIfExists(&users.User{}).Error
 	if err != nil {
 		return err
 	}
-	err = server.DB.AutoMigrate(&models.User{}).Error
+	err = server.DB.AutoMigrate(&users.User{}).Error
 	if err != nil {
 		return err
 	}
@@ -53,43 +53,43 @@ func refreshUserTable() error {
 	return nil
 }
 
-func seedUser() (models.User, error) {
+func seedUser() (users.User, error) {
 	refreshUserTable()
 
-	user := models.User {
+	user := users.User{
 		FirstName: "John",
-		LastName: "Doe",
-		Email: "john@doe.com",
-		Password: "password",
+		LastName:  "Doe",
+		Email:     "john@doe.com",
+		Password:  "password",
 	}
 
-	err := server.DB.Model(&models.User{}).Create(&user).Error
+	err := server.DB.Model(&users.User{}).Create(&user).Error
 	if err != nil {
 		log.Fatalf("cannot seed users table: %v", err)
 	}
 	return user, nil
 }
 
-func seedUsers() ([]models.User, error) {
-	users := []models.User{
-		models.User{
+func seedUsers() ([]users.User, error) {
+	users := []users.User{
+		users.User{
 			FirstName: "John",
-			LastName: "Doe",
-			Email: "john@doe.com",
-			Password: "password",
+			LastName:  "Doe",
+			Email:     "john@doe.com",
+			Password:  "password",
 		},
-		models.User{
+		users.User{
 			FirstName: "Doe",
-			LastName: "John",
-			Email: "doe@john.com",
-			Password: "password",
+			LastName:  "John",
+			Email:     "doe@john.com",
+			Password:  "password",
 		},
 	}
 
 	for i, _ := range users {
-		err := server.DB.Model(&models.User{}).Create(&users[i]).Error
+		err := server.DB.Model(&users.User{}).Create(&users[i]).Error
 		if err != nil {
-			return []models.User{}, err
+			return []users.User{}, err
 		}
 	}
 	return users, nil

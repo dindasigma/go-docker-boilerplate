@@ -10,8 +10,8 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/dindasigma/go-docker-boilerplate/packages/api/models/users"
 	"github.com/gorilla/mux"
-	"github.com/dindasigma/go-docker-boilerplate/packages/api/models"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -21,42 +21,42 @@ func TestCreateUser(t *testing.T) {
 		log.Fatal(err)
 	}
 	samples := []struct {
-		inputJSON	string
-		statusCode	int
-		firstName	string
-		email	string
-		errorMessage	string
+		inputJSON    string
+		statusCode   int
+		firstName    string
+		email        string
+		errorMessage string
 	}{
 		{
-			inputJSON: `{"first_name":"John", "last_name":"Doe", "email":"john@doe.com", "password":"password"}`,
-			statusCode: 201,
-			firstName: "John",
-			email: "john@doe.com",
+			inputJSON:    `{"first_name":"John", "last_name":"Doe", "email":"john@doe.com", "password":"password"}`,
+			statusCode:   201,
+			firstName:    "John",
+			email:        "john@doe.com",
 			errorMessage: "",
 		},
 		{
-			inputJSON: `{"first_name":"John1", "last_name":"Doe", "email":"john@doe.com", "password":"password"}`,
-			statusCode: 500,
+			inputJSON:    `{"first_name":"John1", "last_name":"Doe", "email":"john@doe.com", "password":"password"}`,
+			statusCode:   500,
 			errorMessage: "Email Already Taken",
 		},
 		{
-			inputJSON: `{"first_name":"John", "last_name":"Doe", "email":"johndoe.com", "password":"password"}`,
-			statusCode: 422,
+			inputJSON:    `{"first_name":"John", "last_name":"Doe", "email":"johndoe.com", "password":"password"}`,
+			statusCode:   422,
 			errorMessage: "Invalid Email",
 		},
 		{
-			inputJSON: `{"first_name":"", "last_name":"Doe", "email":"doe@john.com", "password":"password"}`,
-			statusCode: 422,
+			inputJSON:    `{"first_name":"", "last_name":"Doe", "email":"doe@john.com", "password":"password"}`,
+			statusCode:   422,
 			errorMessage: "Required First Name",
 		},
 		{
-			inputJSON: `{"first_name":"John", "last_name":"Doe", "email":"", "password":"password"}`,
-			statusCode: 422,
+			inputJSON:    `{"first_name":"John", "last_name":"Doe", "email":"", "password":"password"}`,
+			statusCode:   422,
 			errorMessage: "Required Email",
 		},
 		{
-			inputJSON: `{"first_name":"John", "last_name":"Doe", "email":"john@doe.com", "password":""}`,
-			statusCode: 422,
+			inputJSON:    `{"first_name":"John", "last_name":"Doe", "email":"john@doe.com", "password":""}`,
+			statusCode:   422,
 			errorMessage: "Required Password",
 		},
 	}
@@ -109,7 +109,7 @@ func TestGetUsers(t *testing.T) {
 	handler := http.HandlerFunc(server.GetUsers)
 	handler.ServeHTTP(rr, req)
 
-	var users []models.User
+	var users []users.User
 	err = json.Unmarshal([]byte(rr.Body.String()), &users)
 	if err != nil {
 		log.Fatalf("Cannot convert to json %v\n", err)
@@ -131,21 +131,21 @@ func TestGetUser(t *testing.T) {
 	}
 
 	sample := []struct {
-		id string
-		statusCode int
-		firstName string
-		email string
+		id           string
+		statusCode   int
+		firstName    string
+		email        string
 		errorMessage string
 	}{
 		{
 			// Convert int32 to int first before converting to string
-			id: strconv.Itoa(int(user.ID)),
+			id:         strconv.Itoa(int(user.ID)),
 			statusCode: 200,
-			firstName: user.FirstName,
-			email: user.Email,
+			firstName:  user.FirstName,
+			email:      user.Email,
 		},
 		{
-			id: "unknown",
+			id:         "unknown",
 			statusCode: 400,
 		},
 	}
@@ -202,84 +202,84 @@ func TestUpdateUser(t *testing.T) {
 	tokenString := fmt.Sprintf("Bearer %v", token)
 
 	samples := []struct {
-		id string
-		updateJSON string
-		statusCode int
+		id              string
+		updateJSON      string
+		statusCode      int
 		updateFirstname string
-		updateEmail string
-		tokenGiven string
-		errorMessage string
+		updateEmail     string
+		tokenGiven      string
+		errorMessage    string
 	}{
 		{
-			
-			id: strconv.Itoa(int(AuthID)),
-			updateJSON: `{"first_name":"John", "last_name":"Doe", "email": "john@doe.com", "password": "password"}`,
-			statusCode: 200,
+
+			id:              strconv.Itoa(int(AuthID)),
+			updateJSON:      `{"first_name":"John", "last_name":"Doe", "email": "john@doe.com", "password": "password"}`,
+			statusCode:      200,
 			updateFirstname: "John",
-			updateEmail: "john@doe.com",
-			tokenGiven: tokenString,
-			errorMessage: "",
+			updateEmail:     "john@doe.com",
+			tokenGiven:      tokenString,
+			errorMessage:    "",
 		},
 		{
-			id: strconv.Itoa(int(AuthID)),
-			updateJSON: `{"first_name":"John2", "last_name":"Doe", "email": "john@doe.com", "password": ""}`,
-			statusCode: 422,
-			tokenGiven: tokenString,
-			errorMessage:"Required Password",
+			id:           strconv.Itoa(int(AuthID)),
+			updateJSON:   `{"first_name":"John2", "last_name":"Doe", "email": "john@doe.com", "password": ""}`,
+			statusCode:   422,
+			tokenGiven:   tokenString,
+			errorMessage: "Required Password",
 		},
 		{
-			id: strconv.Itoa(int(AuthID)),
-			updateJSON: `{"first_name":"John3", "last_name":"Doe", "email": "john@doe.com", "password": "password"}`,
-			statusCode: 401,
-			tokenGiven: "",
+			id:           strconv.Itoa(int(AuthID)),
+			updateJSON:   `{"first_name":"John3", "last_name":"Doe", "email": "john@doe.com", "password": "password"}`,
+			statusCode:   401,
+			tokenGiven:   "",
 			errorMessage: "Unauthorized",
 		},
 		{
-			id: strconv.Itoa(int(AuthID)),
-			updateJSON: `{"first_name":"John4", "last_name":"Doe", "email": "john@doe.com", "password": "password"}`,
-			statusCode: 401,
-			tokenGiven: "incorrect token",
+			id:           strconv.Itoa(int(AuthID)),
+			updateJSON:   `{"first_name":"John4", "last_name":"Doe", "email": "john@doe.com", "password": "password"}`,
+			statusCode:   401,
+			tokenGiven:   "incorrect token",
 			errorMessage: "Unauthorized",
 		},
 		{
-			id: strconv.Itoa(int(AuthID)),
-			updateJSON: `{"first_name":"John5", "last_name":"Doe", "email": "doe@john.com", "password": "password"}`,
-			statusCode: 500,
-			tokenGiven: tokenString,
+			id:           strconv.Itoa(int(AuthID)),
+			updateJSON:   `{"first_name":"John5", "last_name":"Doe", "email": "doe@john.com", "password": "password"}`,
+			statusCode:   500,
+			tokenGiven:   tokenString,
 			errorMessage: "Email Already Taken",
 		},
 		{
-			id: strconv.Itoa(int(AuthID)),
-			updateJSON: `{"first_name":"John6", "last_name":"Doe", "email": "doejohn.com", "password": "password"}`,
-			statusCode: 422,
-			tokenGiven: tokenString,
+			id:           strconv.Itoa(int(AuthID)),
+			updateJSON:   `{"first_name":"John6", "last_name":"Doe", "email": "doejohn.com", "password": "password"}`,
+			statusCode:   422,
+			tokenGiven:   tokenString,
 			errorMessage: "Invalid Email",
 		},
 		{
-			id: strconv.Itoa(int(AuthID)),
-			updateJSON: `{"first_name":"", "last_name":"Doe", "email": "john@doe.com", "password": "password"}`,
-			statusCode: 422,
-			tokenGiven: tokenString,
+			id:           strconv.Itoa(int(AuthID)),
+			updateJSON:   `{"first_name":"", "last_name":"Doe", "email": "john@doe.com", "password": "password"}`,
+			statusCode:   422,
+			tokenGiven:   tokenString,
 			errorMessage: "Required First Name",
 		},
 		{
-			id: strconv.Itoa(int(AuthID)),
-			updateJSON: `{"first_name":"John8", "last_name":"Doe", "email": "", "password": "password"}`,
-			statusCode: 422,
-			tokenGiven: tokenString,
+			id:           strconv.Itoa(int(AuthID)),
+			updateJSON:   `{"first_name":"John8", "last_name":"Doe", "email": "", "password": "password"}`,
+			statusCode:   422,
+			tokenGiven:   tokenString,
 			errorMessage: "Required Email",
 		},
 		{
-			id: "unknown",
+			id:         "unknown",
 			tokenGiven: tokenString,
 			statusCode: 400,
 		},
 		{
 			// When user 2 is using user 1 token
-			id: strconv.Itoa(int(2)),
-			updateJSON: `{"first_name":"John9", "last_name":"Doe", "email": "", "password": "password"}`,
-			tokenGiven: tokenString,
-			statusCode: 401,
+			id:           strconv.Itoa(int(2)),
+			updateJSON:   `{"first_name":"John9", "last_name":"Doe", "email": "", "password": "password"}`,
+			tokenGiven:   tokenString,
+			statusCode:   401,
 			errorMessage: "Unauthorized",
 		},
 	}
@@ -303,7 +303,7 @@ func TestUpdateUser(t *testing.T) {
 		if err != nil {
 			t.Errorf("Cannot convert to json: %v", err)
 		}
-		
+
 		assert.Equalf(t, v.statusCode, rr.Code, "v.statusCode: %d, rr.Code: %d", v.statusCode, rr.Code)
 		if v.statusCode == 200 {
 			assert.Equal(t, v.updateFirstname, responseMap["first_name"])
@@ -328,11 +328,11 @@ func TestDeleteUser(t *testing.T) {
 	if err != nil {
 		log.Fatalf("Error seeding user: %v\n", err)
 	}
-		
+
 	AuthID = user[0].ID
 	AuthEmail = user[0].Email
 	AuthPassword = "password"
-	
+
 	// login
 	token, err := server.SignIn(AuthEmail, AuthPassword)
 	if err != nil {
@@ -390,7 +390,6 @@ func TestDeleteUser(t *testing.T) {
 
 		handler.ServeHTTP(rr, req)
 		assert.Equalf(t, v.statusCode, rr.Code, "v.statusCode: %d, rr.Code: %d", v.statusCode, rr.Code)
-		
 
 		if v.statusCode == 401 && v.errorMessage != "" {
 			responseMap := make(map[string]interface{})
@@ -402,4 +401,3 @@ func TestDeleteUser(t *testing.T) {
 		}
 	}
 }
-

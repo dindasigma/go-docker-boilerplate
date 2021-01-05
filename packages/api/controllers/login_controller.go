@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/dindasigma/go-docker-boilerplate/packages/api/auth"
-	"github.com/dindasigma/go-docker-boilerplate/packages/api/models"
+	"github.com/dindasigma/go-docker-boilerplate/packages/api/models/users"
 	"github.com/dindasigma/go-docker-boilerplate/packages/api/responses"
 	"github.com/dindasigma/go-docker-boilerplate/packages/api/utils/formaterror"
 	"golang.org/x/crypto/bcrypt"
@@ -17,7 +17,7 @@ import (
 // @Tags users
 // @Accept  json
 // @Produce  json
-// @Param user body models.User true "Email and Password only"
+// @Param user body users.User true "Email and Password only"
 // @Success 200 {string} Token "JWT Token"
 // @Failure 422 {object} responses.Error
 // @Router /login [post]
@@ -28,7 +28,7 @@ func (server *Server) Login(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
-	user := models.User{}
+	user := users.User{}
 	err = json.Unmarshal(body, &user)
 	if err != nil {
 		// 422
@@ -57,13 +57,13 @@ func (server *Server) SignIn(email, password string) (string, error) {
 
 	var err error
 
-	user := models.User{}
+	user := users.User{}
 
-	err = server.DB.Debug().Model(models.User{}).Where("email = ?", email).Take(&user).Error
+	err = server.DB.Debug().Model(users.User{}).Where("email = ?", email).Take(&user).Error
 	if err != nil {
 		return "", err
 	}
-	err = models.VerifyPassword(user.Password, password)
+	err = users.VerifyPassword(user.Password, password)
 	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
 		return "", err
 	}

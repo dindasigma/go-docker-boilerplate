@@ -52,7 +52,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/users.User"
                         }
                     }
                 ],
@@ -91,7 +91,7 @@ var doc = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.User"
+                                "$ref": "#/definitions/users.User"
                             }
                         }
                     },
@@ -122,7 +122,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/users.User"
                         }
                     }
                 ],
@@ -130,7 +130,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/users.User"
                         }
                     },
                     "422": {
@@ -174,7 +174,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/users.User"
                         }
                     },
                     "500": {
@@ -216,7 +216,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/users.User"
                         }
                     }
                 ],
@@ -224,7 +224,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/users.User"
                         }
                     },
                     "400": {
@@ -306,7 +306,15 @@ var doc = `{
         }
     },
     "definitions": {
-        "models.User": {
+        "responses.Error": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "users.User": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -340,14 +348,6 @@ var doc = `{
                 "updated_at": {
                     "type": "string",
                     "example": "2020-09-06T15:17:17.769031568Z"
-                }
-            }
-        },
-        "responses.Error": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "type": "string"
                 }
             }
         }
