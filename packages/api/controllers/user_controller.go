@@ -1,6 +1,6 @@
 package controllers
 
-/*import (
+import (
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -9,11 +9,26 @@ package controllers
 	"strconv"
 
 	"github.com/dindasigma/go-docker-boilerplate/packages/api/auth"
+	"github.com/dindasigma/go-docker-boilerplate/packages/api/datasources"
 	"github.com/dindasigma/go-docker-boilerplate/packages/api/models/users"
 	"github.com/dindasigma/go-docker-boilerplate/packages/api/responses"
 	"github.com/dindasigma/go-docker-boilerplate/packages/api/utils/formaterror"
 	"github.com/gorilla/mux"
 )
+
+var (
+	UserController userControllerInterface = &userController{}
+)
+
+type userControllerInterface interface {
+	Create(w http.ResponseWriter, r *http.Request)
+	GetByID(w http.ResponseWriter, r *http.Request)
+	Get(w http.ResponseWriter, r *http.Request)
+	Update(w http.ResponseWriter, r *http.Request)
+	Delete(w http.ResponseWriter, r *http.Request)
+}
+
+type userController struct{}
 
 // CreateUser godoc
 // @Summary Create a new user
@@ -26,7 +41,7 @@ package controllers
 // @Failure 422 {object} responses.Error
 // @Failure 500 {object} responses.Error
 // @Router /users [post]
-func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
+func (c *userController) Create(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
@@ -47,7 +62,7 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userCreated, err := user.Save(server.DB)
+	userCreated, err := user.Save(datasources.DB)
 	if err != nil {
 		formattedError := formaterror.FormatError(err.Error())
 		// 500
@@ -68,9 +83,9 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 // @Success 200 {array} users.User
 // @Failure 500 {object} responses.Error
 // @Router /users [get]
-func (server *Server) GetUsers(w http.ResponseWriter, r *http.Request) {
+func (c *userController) Get(w http.ResponseWriter, r *http.Request) {
 	user := users.User{}
-	users, err := user.FindAll(server.DB)
+	users, err := user.FindAll(datasources.DB)
 	if err != nil {
 		responses.ERROR(w, http.StatusInternalServerError, err)
 		return
@@ -88,7 +103,7 @@ func (server *Server) GetUsers(w http.ResponseWriter, r *http.Request) {
 // @Success 200 {object} users.User
 // @Failure 500 {object} responses.Error
 // @Router /users/{id} [get]
-func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
+func (c *userController) GetByID(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	uid, err := strconv.ParseUint(vars["id"], 10, 32)
 	if err != nil {
@@ -97,7 +112,7 @@ func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	user := users.User{}
-	userGotten, err := user.FindByID(server.DB, uint32(uid))
+	userGotten, err := user.FindByID(datasources.DB, uint32(uid))
 	if err != nil {
 		responses.ERROR(w, http.StatusBadRequest, err)
 		return
@@ -121,7 +136,7 @@ func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
 // @Failure 422 {object} responses.Error
 // @Failure 500 {object} responses.Error
 // @Router /users/{id} [put]
-func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
+func (c *userController) Update(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	uid, err := strconv.ParseUint(vars["id"], 10, 32)
 	if err != nil {
@@ -163,7 +178,7 @@ func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
-	updatedUser, err := user.Update(server.DB, uint32(uid))
+	updatedUser, err := user.Update(datasources.DB, uint32(uid))
 	if err != nil {
 		formattedError := formaterror.FormatError(err.Error())
 		responses.ERROR(w, http.StatusInternalServerError, formattedError)
@@ -185,7 +200,7 @@ func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
 // @Failure 401 {object} responses.Error
 // @Failure 500 {object} responses.Error
 // @Router /users/{id} [delete]
-func (server *Server) DeleteUser(w http.ResponseWriter, r *http.Request) {
+func (c *userController) Delete(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	user := users.User{}
 
@@ -206,7 +221,7 @@ func (server *Server) DeleteUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = user.Delete(server.DB, uint32(uid))
+	_, err = user.Delete(datasources.DB, uint32(uid))
 	if err != nil {
 		responses.ERROR(w, http.StatusInternalServerError, err)
 		return
@@ -215,4 +230,3 @@ func (server *Server) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Entity", fmt.Sprintf("%d", uid))
 	responses.JSON(w, http.StatusNoContent, "")
 }
-*/
