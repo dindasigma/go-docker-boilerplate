@@ -8,11 +8,12 @@ import (
 	"time"
 
 	"github.com/badoux/checkmail"
+	"github.com/dindasigma/go-docker-boilerplate/packages/api/utils/crypto"
 	"github.com/jinzhu/gorm"
 )
 
 func (u *User) BeforeSave() error {
-	hashedPassword, err := Hash(u.Password)
+	hashedPassword, err := crypto.Hash(u.Password)
 	if err != nil {
 		return err
 	}
@@ -140,4 +141,16 @@ func (u *User) Delete(db *gorm.DB, uid uint32) (int64, error) {
 		return 0, db.Error
 	}
 	return db.RowsAffected, nil
+}
+
+func (u *User) Check(db *gorm.DB, email string) error {
+
+	err := db.Debug().Model(User{}).Where("email = ?", email).Take(&u).Error
+	if err != nil {
+		return err
+	}
+	if gorm.IsRecordNotFoundError(err) {
+		return errors.New("User Not Found")
+	}
+	return nil
 }
