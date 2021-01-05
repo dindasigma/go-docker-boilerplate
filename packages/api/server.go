@@ -5,12 +5,10 @@ import (
 	"log"
 	"os"
 
+	"github.com/dindasigma/go-docker-boilerplate/packages/api/application"
+	"github.com/dindasigma/go-docker-boilerplate/packages/api/datasources"
 	"github.com/joho/godotenv"
-	"github.com/dindasigma/go-docker-boilerplate/packages/api/controllers"
-	"github.com/dindasigma/go-docker-boilerplate/packages/api/seed"
 )
-
-var server = controllers.Server{}
 
 func Run() {
 
@@ -22,10 +20,8 @@ func Run() {
 		fmt.Println("We are getting the env values")
 	}
 
-	server.Initialize(os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_PORT"), os.Getenv("DB_HOST"), os.Getenv("DB_NAME"))
+	datasources.InitializePostgres(os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_PORT"), os.Getenv("DB_HOST"), os.Getenv("DB_NAME"))
 
-	seed.Load(server.DB)
-
-	server.Run(":8080")
+	application.Run(":8080")
 
 }

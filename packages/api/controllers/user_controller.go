@@ -1,6 +1,6 @@
 package controllers
 
-import (
+/*import (
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -47,7 +47,7 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userCreated, err := user.SaveUser(server.DB)
+	userCreated, err := user.Save(server.DB)
 	if err != nil {
 		formattedError := formaterror.FormatError(err.Error())
 		// 500
@@ -70,7 +70,7 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 // @Router /users [get]
 func (server *Server) GetUsers(w http.ResponseWriter, r *http.Request) {
 	user := users.User{}
-	users, err := user.FindAllUsers(server.DB)
+	users, err := user.FindAll(server.DB)
 	if err != nil {
 		responses.ERROR(w, http.StatusInternalServerError, err)
 		return
@@ -97,7 +97,7 @@ func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	user := users.User{}
-	userGotten, err := user.FindUserByID(server.DB, uint32(uid))
+	userGotten, err := user.FindByID(server.DB, uint32(uid))
 	if err != nil {
 		responses.ERROR(w, http.StatusBadRequest, err)
 		return
@@ -163,7 +163,7 @@ func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
-	updatedUser, err := user.UpdateAUser(server.DB, uint32(uid))
+	updatedUser, err := user.Update(server.DB, uint32(uid))
 	if err != nil {
 		formattedError := formaterror.FormatError(err.Error())
 		responses.ERROR(w, http.StatusInternalServerError, formattedError)
@@ -206,7 +206,7 @@ func (server *Server) DeleteUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = user.DeleteAUser(server.DB, uint32(uid))
+	_, err = user.Delete(server.DB, uint32(uid))
 	if err != nil {
 		responses.ERROR(w, http.StatusInternalServerError, err)
 		return
@@ -215,3 +215,4 @@ func (server *Server) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Entity", fmt.Sprintf("%d", uid))
 	responses.JSON(w, http.StatusNoContent, "")
 }
+*/

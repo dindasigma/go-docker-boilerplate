@@ -1,4 +1,4 @@
-package postgres
+package datasources
 
 import (
 	"fmt"
@@ -14,7 +14,7 @@ var (
 	DB *gorm.DB
 )
 
-func Initialize(DbUser, DbPassword, DbPort, DbHost, DbName string) {
+func InitializePostgres(DbUser, DbPassword, DbPort, DbHost, DbName string) {
 	var err error
 
 	DBURL := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=disable password=%s", DbHost, DbPort, DbUser, DbName, DbPassword)
