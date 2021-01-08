@@ -10,17 +10,17 @@ import (
 
 func initializeRoutes() {
 	// Home Route
-	router.HandleFunc("/", middlewares.SetMiddlewareJSON(controllers.HomeController.Home)).Methods("GET")
+	router.HandleFunc("/", middlewares.SetJSON(controllers.HomeController.Home)).Methods("GET")
 
 	// Login Route
-	router.HandleFunc("/login", middlewares.SetMiddlewareJSON(controllers.LoginController.Login)).Methods("POST")
+	router.HandleFunc("/login", middlewares.SetJSON(controllers.LoginController.Login)).Methods("POST")
 
 	// Users routes
-	router.HandleFunc("/users", middlewares.SetMiddlewareJSON(controllers.UserController.Get)).Methods("GET")
-	router.HandleFunc("/users/{id}", middlewares.SetMiddlewareJSON(controllers.UserController.GetByID)).Methods("GET")
-	router.HandleFunc("/users", middlewares.SetMiddlewareJSON(controllers.UserController.Create)).Methods("POST")
-	router.HandleFunc("/users/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthentication(controllers.UserController.Update))).Methods("PUT")
-	router.HandleFunc("/users/{id}", middlewares.SetMiddlewareAuthentication(controllers.UserController.Delete)).Methods("DELETE")
+	router.HandleFunc("/users", middlewares.SetTimeout(middlewares.SetJSON(controllers.UserController.Get))).Methods("GET")
+	router.HandleFunc("/users/{id}", middlewares.SetJSON(controllers.UserController.GetByID)).Methods("GET")
+	router.HandleFunc("/users", middlewares.SetJSON(controllers.UserController.Create)).Methods("POST")
+	router.HandleFunc("/users/{id}", middlewares.SetJSON(middlewares.SetAuthentication(controllers.UserController.Update))).Methods("PUT")
+	router.HandleFunc("/users/{id}", middlewares.SetAuthentication(controllers.UserController.Delete)).Methods("DELETE")
 
 	// Swagger
 	router.PathPrefix("/swagger").Handler(httpSwagger.WrapHandler)
