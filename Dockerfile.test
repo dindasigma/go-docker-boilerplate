@@ -1,4 +1,4 @@
-FROM golang:alpine
+FROM golang:latest
 
 LABEL maintainer="Dinda <dindasigma@gmail.com>"
 

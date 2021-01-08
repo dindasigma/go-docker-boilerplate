@@ -3,7 +3,9 @@ package datasources
 import (
 	"fmt"
 	"log"
+	"os"
 
+	"github.com/dindasigma/go-docker-boilerplate/packages/api/helpers"
 	"github.com/dindasigma/go-docker-boilerplate/packages/api/models/users"
 	"github.com/dindasigma/go-docker-boilerplate/packages/api/seed"
 	"github.com/jinzhu/gorm"
@@ -14,13 +16,27 @@ var (
 	DB *gorm.DB
 )
 
-func InitializePostgres(DbUser, DbPassword, DbPort, DbHost, DbName string) {
-	var err error
+func InitializePostgres() {
+	dbConfig := helpers.NewDatabase(
+		os.Getenv("DB_MS"),
+		os.Getenv("DB_USER"),
+		os.Getenv("DB_PASSWORD"),
+		os.Getenv("DB_HOST"),
+		os.Getenv("DB_PORT"),
+		os.Getenv("DB_NAME"),
+		os.Getenv("DB_TIMEZONE"),
+		os.Getenv("DB_SSL_MODE"),
+		"",
+		"",
+		"",
+	)
 
-	DBURL := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=disable password=%s", DbHost, DbPort, DbUser, DbName, DbPassword)
-	DB, err = gorm.Open("postgres", DBURL)
+	// Connect to DB
+	var err error
+	DB, err = dbConfig.Connect()
+
 	if err != nil {
-		log.Fatal("This is the error:", err)
+		log.Fatalf("Invalid db config: %v", err)
 	} else {
 		fmt.Printf("We are connected to the database")
 	}
