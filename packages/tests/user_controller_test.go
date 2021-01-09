@@ -36,7 +36,7 @@ func TestCreateUser(t *testing.T) {
 			errorMessage: "",
 		},
 		{
-			inputJSON:    `{"first_name":"John1", "last_name":"Doe", "email":"john@doe.com", "password":"password"}`,
+			inputJSON:    `{"first_name":"John1", "last_name":"Doe", "email":"john@doe1.com", "password":"password"}`,
 			statusCode:   500,
 			errorMessage: "Email Already Taken",
 		},
@@ -244,7 +244,7 @@ func TestUpdateUser(t *testing.T) {
 		},
 		{
 			id:           strconv.Itoa(int(AuthID)),
-			updateJSON:   `{"first_name":"John5", "last_name":"Doe", "email": "doe@john.com", "password": "password"}`,
+			updateJSON:   `{"first_name":"John5", "last_name":"Doe", "email": "doe@john5.com", "password": "password"}`,
 			statusCode:   500,
 			tokenGiven:   tokenString,
 			errorMessage: "Email Already Taken",

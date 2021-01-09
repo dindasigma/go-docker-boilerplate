@@ -1,6 +1,7 @@
 package users
 
 import (
+	"context"
 	"errors"
 	"html"
 	"log"
@@ -9,10 +10,10 @@ import (
 
 	"github.com/badoux/checkmail"
 	"github.com/dindasigma/go-docker-boilerplate/packages/api/utils/crypto"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
-func (u *User) BeforeSave() error {
+func (u *User) beforeSave() error {
 	hashedPassword, err := crypto.Hash(u.Password)
 	if err != nil {
 		return err
@@ -76,66 +77,66 @@ func (u *User) Validate(action string) error {
 	}
 }
 
-func (u *User) Save(db *gorm.DB) (*User, error) {
-	var err error
-	err = db.Debug().Create(&u).Error
+func (u *User) Save(ctx context.Context, db *gorm.DB) (*User, error) {
+	err := db.WithContext(ctx).Debug().Create(&u).Error
 	if err != nil {
 		return &User{}, err
 	}
 	return u, nil
 }
 
-func (u *User) FindAll(db *gorm.DB) (*[]User, error) {
+func (u *User) FindAll(ctx context.Context, db *gorm.DB) (*[]User, error) {
 	var err error
 	users := []User{}
-	err = db.Debug().Model(&User{}).Limit(100).Find(&users).Error
+	err = db.WithContext(ctx).Debug().Model(&User{}).Limit(100).Find(&users).Error
 	if err != nil {
 		return &[]User{}, err
 	}
 	return &users, err
 }
 
-func (u *User) FindByID(db *gorm.DB, uid uint32) (*User, error) {
+func (u *User) FindByID(ctx context.Context, db *gorm.DB, uid uint32) (*User, error) {
 	var err error
-	err = db.Debug().Model(User{}).Where("id = ?", uid).Take(&u).Error
+	err = db.WithContext(ctx).Debug().Model(User{}).Where("id = ?", uid).Take(&u).Error
 	if err != nil {
 		return &User{}, err
 	}
-	if gorm.IsRecordNotFoundError(err) {
+
+	if err == gorm.ErrRecordNotFound {
 		return &User{}, errors.New("User Not Found")
 	}
 	return u, err
 }
 
-func (u *User) Update(db *gorm.DB, uid uint32) (*User, error) {
+func (u *User) Update(ctx context.Context, db *gorm.DB, uid uint32) (*User, error) {
 	// To hash the password
-	err := u.BeforeSave()
+	err := u.beforeSave()
 	if err != nil {
 		log.Fatal(err)
 	}
-	db = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&User{}).UpdateColumns(
+	db = db.WithContext(ctx).Debug().Model(&User{}).Where("id = ?", uid).Take(&User{}).UpdateColumns(
 		map[string]interface{}{
 			"password":   u.Password,
 			"first_name": u.FirstName,
 			"last_name":  u.LastName,
 			"role":       u.Role,
 			"email":      u.Email,
-			"update_at":  time.Now(),
+			"updated_at": time.Now(),
 		},
 	)
 	if db.Error != nil {
 		return &User{}, db.Error
 	}
 	// This is the display the updated user
-	err = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&u).Error
+	err = db.WithContext(ctx).Debug().Model(&User{}).Where("id = ?", uid).Take(&u).Error
 	if err != nil {
 		return &User{}, err
 	}
 	return u, nil
 }
 
-func (u *User) Delete(db *gorm.DB, uid uint32) (int64, error) {
-	db = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&User{}).Delete(&User{})
+func (u *User) Delete(ctx context.Context, db *gorm.DB, uid uint32) (int64, error) {
+	db = db.WithContext(ctx).Debug().Model(&User{}).Where("id = ?", uid).Take(&User{}).Delete(&User{})
 
 	if db.Error != nil {
 		return 0, db.Error
@@ -149,7 +150,7 @@ func (u *User) Check(db *gorm.DB, email string) error {
 	if err != nil {
 		return err
 	}
-	if gorm.IsRecordNotFoundError(err) {
+	if err == gorm.ErrRecordNotFound {
 		return errors.New("User Not Found")
 	}
 	return nil

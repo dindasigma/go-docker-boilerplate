@@ -3,7 +3,8 @@ package helpers
 import (
 	"fmt"
 
-	"github.com/jinzhu/gorm"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 type Database struct {
@@ -38,15 +39,11 @@ func NewDatabase(db, username, password, host, port, dbName, timezone, sslMode, 
 
 // connect to DB
 func (c *Database) Connect() (*gorm.DB, error) {
-	connStr := fmt.Sprintf(
-		"host=%s port=%s user=%s dbname=%s sslmode=disable password=%s", c.host, c.port, c.username, c.dbName, c.password,
+	dsn := fmt.Sprintf(
+		"host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=%s", c.host, c.username, c.password, c.dbName, c.port, c.sslMode, c.timezone,
 	)
 
-	if c.sslMode == "require" {
-		connStr += fmt.Sprintf("&sslcert=%s&sslkey=%s&sslrootcert=%s", c.sslCert, c.sslKey, c.sslRootCert)
-	}
-
-	db, err := gorm.Open(c.db, connStr)
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	return db, err
 }

@@ -62,7 +62,8 @@ func (c *userController) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userCreated, err := user.Save(datasources.DB)
+	ctx := r.Context()
+	userCreated, err := user.Save(ctx, datasources.DB)
 	if err != nil {
 		formattedError := formaterror.FormatError(err.Error())
 		// 500
@@ -85,7 +86,8 @@ func (c *userController) Create(w http.ResponseWriter, r *http.Request) {
 // @Router /users [get]
 func (c *userController) Get(w http.ResponseWriter, r *http.Request) {
 	user := users.User{}
-	users, err := user.FindAll(datasources.DB)
+	ctx := r.Context()
+	users, err := user.FindAll(ctx, datasources.DB)
 	if err != nil {
 		responses.ERROR(w, http.StatusInternalServerError, err)
 		return
@@ -112,7 +114,8 @@ func (c *userController) GetByID(w http.ResponseWriter, r *http.Request) {
 	}
 
 	user := users.User{}
-	userGotten, err := user.FindByID(datasources.DB, uint32(uid))
+	ctx := r.Context()
+	userGotten, err := user.FindByID(ctx, datasources.DB, uint32(uid))
 	if err != nil {
 		responses.ERROR(w, http.StatusBadRequest, err)
 		return
@@ -178,7 +181,8 @@ func (c *userController) Update(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
-	updatedUser, err := user.Update(datasources.DB, uint32(uid))
+	ctx := r.Context()
+	updatedUser, err := user.Update(ctx, datasources.DB, uint32(uid))
 	if err != nil {
 		formattedError := formaterror.FormatError(err.Error())
 		responses.ERROR(w, http.StatusInternalServerError, formattedError)
@@ -221,7 +225,8 @@ func (c *userController) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = user.Delete(datasources.DB, uint32(uid))
+	ctx := r.Context()
+	_, err = user.Delete(ctx, datasources.DB, uint32(uid))
 	if err != nil {
 		responses.ERROR(w, http.StatusInternalServerError, err)
 		return

@@ -8,8 +8,9 @@ import (
 
 	"github.com/dindasigma/go-docker-boilerplate/packages/api/datasources"
 	"github.com/dindasigma/go-docker-boilerplate/packages/api/models/users"
-	"github.com/jinzhu/gorm"
 	"github.com/joho/godotenv"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 var userInstance = users.User{}
@@ -31,7 +32,8 @@ func TestMain(m *testing.M) {
 func databaseConnect() {
 	var err error
 	DBURL := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=disable password=%s", os.Getenv("TEST_DB_HOST"), os.Getenv("TEST_DB_PORT"), os.Getenv("TEST_DB_USER"), os.Getenv("TEST_DB_NAME"), os.Getenv("TEST_DB_PASSWORD"))
-	datasources.DB, err = gorm.Open("postgres", DBURL)
+	datasources.DB, err = gorm.Open(postgres.Open(DBURL), &gorm.Config{})
+
 	if err != nil {
 		log.Fatal("This is the error:", err)
 	} else {
@@ -40,14 +42,10 @@ func databaseConnect() {
 }
 
 func refreshUserTable() error {
-	err := datasources.DB.DropTableIfExists(&users.User{}).Error
-	if err != nil {
-		return err
-	}
-	err = datasources.DB.AutoMigrate(&users.User{}).Error
-	if err != nil {
-		return err
-	}
+	datasources.DB.Migrator().DropTable(&users.User{})
+
+	datasources.DB.AutoMigrate(&users.User{})
+
 	log.Printf("Successfully refreshed table")
 	return nil
 }

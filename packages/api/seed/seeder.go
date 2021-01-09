@@ -1,10 +1,8 @@
 package seed
 
 import (
-	"log"
-
 	"github.com/dindasigma/go-docker-boilerplate/packages/api/models/users"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 var usersSeed = []users.User{
@@ -23,20 +21,14 @@ var usersSeed = []users.User{
 }
 
 func Load(db *gorm.DB) {
+	// drop table if exist
+	db.Debug().Migrator().DropTable(&users.User{})
 
-	err := db.Debug().DropTableIfExists(&users.User{}).Error
-	if err != nil {
-		log.Fatalf("cannot drop table: %v", err)
-	}
-	err = db.Debug().AutoMigrate(&users.User{}).Error
-	if err != nil {
-		log.Fatalf("cannot migrate table: %v", err)
-	}
+	// Migrate the schema
+	db.AutoMigrate(&users.User{})
 
+	// Create
 	for i, _ := range usersSeed {
-		err = db.Debug().Model(&users.User{}).Create(&usersSeed[i]).Error
-		if err != nil {
-			log.Fatalf("cannot seed users table: %v", err)
-		}
+		db.Create(&usersSeed[i])
 	}
 }

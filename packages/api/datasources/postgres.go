@@ -6,10 +6,8 @@ import (
 	"os"
 
 	"github.com/dindasigma/go-docker-boilerplate/packages/api/helpers"
-	"github.com/dindasigma/go-docker-boilerplate/packages/api/models/users"
 	"github.com/dindasigma/go-docker-boilerplate/packages/api/seed"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"gorm.io/gorm"
 )
 
 var (
@@ -26,7 +24,7 @@ func InitializePostgres() {
 		os.Getenv("DB_NAME"),
 		os.Getenv("DB_TIMEZONE"),
 		os.Getenv("DB_SSL_MODE"),
-		"",
+		os.Getenv("DB_TIMEZONE"),
 		"",
 		"",
 	)
@@ -41,6 +39,9 @@ func InitializePostgres() {
 		fmt.Printf("We are connected to the database")
 	}
 
-	DB.Debug().AutoMigrate(&users.User{})
+	if err != nil {
+		panic("failed to connect database")
+	}
+
 	seed.Load(DB)
 }
